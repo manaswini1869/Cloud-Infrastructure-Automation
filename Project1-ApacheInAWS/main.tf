@@ -29,6 +29,12 @@ provider "aws" {
 #   }
 # }
 
+variable "subnet_prefix" {
+  description = "CIDR block of subnet"
+  # default
+  type = string #Any, if you don't know which type you are using
+}
+
 # 1. Custom vpc
 resource "aws_vpc" "prod_vpc" {
   cidr_block       = "10.0.0.0/16"
@@ -142,6 +148,10 @@ resource "aws_eip" "one" {
   network_interface         = aws_network_interface.prod_server_nic.id
   associate_with_private_ip = "10.0.1.50"
   depends_on = [ aws_internet_gateway.prod_gw ]
+}
+
+output "server_public_ip" {
+  value = aws_eip.one.public_ip  
 }
 # 9. Create Ubuntu server and install/enable apache
 resource "aws_instance" "web_server_instance" {
